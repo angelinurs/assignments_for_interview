@@ -1,0 +1,31 @@
+services:
+  # maria-db
+  backend-db:
+    image: mariadb:${MARIADB_IMAGE_TAG}
+    restart: ${RESTART}
+    container_name: backend-db
+    hostname: backend-db
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
+    volumes:
+      - "./mariadb/conf.d:/etc/mysql/conf.d"
+      - "./mariadb/data:/var/lib/mysql"
+    ports:
+      - '3306:3306'
+    environment:
+      - TZ
+      - MARIADB_USER
+      - MARIADB_PASSWORD
+      - MARIADB_DATABASE
+      - MARIADB_ROOT_PASSWORD
+    networks:
+      - backend-network
+      - external-network
+
+networks:
+  backend-network:
+    driver: bridge
+  external-network:
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
